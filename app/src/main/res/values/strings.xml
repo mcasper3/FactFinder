@@ -2,5 +2,7 @@
     <string name="app_name">FactFinder</string>
     <string name="select_a_fact">Select a fact</string>
     <string name="your_fun_fact_is_label">Your fun fact is:</string>
-    <string name="no_fun_facts">No Fun Facts</string>
+    <string name="no_fun_facts">You currently don\'t have any fun facts. Click the + button to add some!</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>

@@ -52,14 +52,21 @@
         app:layout_constraintGuide_percent="0.75"
         />
 
+    <android.support.constraint.Group
+        android:id="@+id/no_content_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="iv_no_content,tv_no_fun_facts"
+        />
+
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/iv_no_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_lightbulb"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_no_fun_facts"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/tv_no_fun_facts"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         />
@@ -68,18 +75,29 @@
         android:id="@+id/tv_no_fun_facts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/no_fun_facts"
         android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:paddingEnd="45dp"
+        android:paddingStart="45dp"
+        android:text="@string/no_fun_facts"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_no_content"
+        />
+
+    <android.support.constraint.Group
+        android:id="@+id/content_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="recycler_view,btn_select_fact"
         />
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
