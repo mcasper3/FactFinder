@@ -5,4 +5,10 @@
     <string name="no_fun_facts">You currently don\'t have any fun facts. Click the + button to add some!</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="add_shortcut_short_label">Add a fact</string>
+    <string name="add_shortcut_long_label">Add a new fun fact</string>
+    <string name="add_disabled_message">Adding a fact is unavailable</string>
+    <string name="select_shortcut_short_label">Select a fact</string>
+    <string name="select_shortcut_long_label">Select a random fun fact</string>
+    <string name="select_disabled_message">Selecting a fact is unavailable</string>
 </resources>

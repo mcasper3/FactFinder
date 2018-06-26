@@ -1,5 +1,6 @@
 package com.buildertrend.factfinder
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -19,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private val adapter = FactAdapter(this::showFactDialog)
 
     private var disposable: Disposable? = null
+    private var shouldSelectFunFact = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,20 +30,11 @@ class MainActivity : AppCompatActivity() {
         recycler_view.adapter = adapter
         recycler_view.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 
-        btn_select_fact.setOnClickListener {
-            val position = (0..adapter.itemCount).random()
-            showFactDialog(adapter.facts[position])
-        }
+        btn_select_fact.setOnClickListener { selectRandomFunFact() }
 
-        btn_add_fact.setOnClickListener {
-            val editText = EditText(this)
-            AlertDialog.Builder(this)
-                .setTitle("Add a fun fact")
-                .setPositiveButton("ok", { _, _ -> databaseManager.insertFact(editText.text.toString()) })
-                .setNegativeButton("cancel", { dialog, _ -> dialog.dismiss() })
-                .setView(editText)
-                .show()
-        }
+        btn_add_fact.setOnClickListener { showAddFactDialog() }
+
+        handleIntent(intent)
 
         disposable = databaseManager.getAllFacts()
             .subscribeOn(Schedulers.io())
@@ -55,8 +48,22 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     no_content_group.visibility = View.GONE
                     content_group.visibility = View.VISIBLE
+                    if (shouldSelectFunFact) {
+                        selectRandomFunFact()
+                    }
                 }
+                shouldSelectFunFact = false
             }
+    }
+
+    private fun showAddFactDialog() {
+        val editText = EditText(this)
+        AlertDialog.Builder(this)
+            .setTitle("Add a fun fact")
+            .setPositiveButton("ok", { _, _ -> databaseManager.insertFact(editText.text.toString()) })
+            .setNegativeButton("cancel", { dialog, _ -> dialog.dismiss() })
+            .setView(editText)
+            .show()
     }
 
     private fun showFactDialog(fact: Fact) {
@@ -68,8 +75,31 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
+    private fun selectRandomFunFact() {
+        val position = (0..adapter.itemCount).random()
+        showFactDialog(adapter.facts[position])
+    }
+
     override fun onDestroy() {
         disposable?.dispose()
         super.onDestroy()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent) {
+        when (intent.action) {
+            Intent.ACTION_INSERT -> showAddFactDialog()
+            Intent.ACTION_GET_CONTENT -> {
+                if (adapter.itemCount > 0) {
+                    selectRandomFunFact()
+                } else {
+                    shouldSelectFunFact = true
+                }
+            }
+        }
     }
 }
