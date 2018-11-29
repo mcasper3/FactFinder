@@ -60,8 +60,8 @@ class MainActivity : AppCompatActivity() {
         val editText = EditText(this)
         AlertDialog.Builder(this)
             .setTitle("Add a fun fact")
-            .setPositiveButton("ok", { _, _ -> databaseManager.insertFact(editText.text.toString()) })
-            .setNegativeButton("cancel", { dialog, _ -> dialog.dismiss() })
+            .setPositiveButton("ok") { _, _ -> databaseManager.insertFact(editText.text.toString()) }
+            .setNegativeButton("cancel") { dialog, _ -> dialog.dismiss() }
             .setView(editText)
             .show()
     }
