@@ -11,4 +11,5 @@
     <string name="select_shortcut_short_label">Select a fact</string>
     <string name="select_shortcut_long_label">Select a random fun fact</string>
     <string name="select_disabled_message">Selecting a fact is unavailable</string>
+    <string name="add_fact">Add a fun fact</string>
 </resources>

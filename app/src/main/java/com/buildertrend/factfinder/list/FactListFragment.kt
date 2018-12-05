@@ -5,7 +5,9 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import com.buildertrend.factfinder.DatabaseManager
 import com.buildertrend.factfinder.FactAdapter
@@ -15,6 +17,8 @@ import com.buildertrend.factfinder.database.Fact
 import com.buildertrend.factfinder.extensions.hide
 import com.buildertrend.factfinder.extensions.show
 import com.buildertrend.factfinder.random
+import com.jakewharton.rxrelay2.PublishRelay
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -25,6 +29,9 @@ class FactListFragment : Fragment() {
 
     @Inject internal lateinit var databaseManager: DatabaseManager
     @Inject internal lateinit var adapter: FactAdapter
+
+    private val factChosenRelay = PublishRelay.create<Unit>()
+        .map { UseFactEvent }
 
     private val compositeDisposable = CompositeDisposable()
     private var shouldSelectFunFact = false
@@ -37,12 +44,22 @@ class FactListFragment : Fragment() {
         mainActivity?.setFabClickListener(View.OnClickListener { showAddFactDialog() })
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_fact_list, container, false)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+
+        val addFactObservable = (activity as MainActivity).fabClickObservable!!
+            .map { AddFactEvent }
+        val selectFactObservable = Observable.just(SelectRandomFactEvent)
+
+        Observable.merge(addFactObservable, selectFactObservable, factChosenRelay)
 
         compositeDisposable.add(
             databaseManager.getAllFacts()
@@ -75,9 +92,9 @@ class FactListFragment : Fragment() {
         with(requireContext()) {
             val editText = EditText(this)
             AlertDialog.Builder(this)
-                .setTitle("Add a fun fact")
-                .setPositiveButton("ok") { _, _ -> databaseManager.insertFact(editText.text.toString()) }
-                .setNegativeButton("cancel") { dialog, _ -> dialog.dismiss() }
+                .setTitle(getString(R.string.add_fact))
+                .setPositiveButton(R.string.ok) { _, _ -> databaseManager.insertFact(editText.text.toString()) }
+                .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
                 .setView(editText)
                 .show()
         }
